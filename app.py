@@ -75,13 +75,17 @@ def getData():
 	cell_size = float(request.args.get('cell_size'))
 
 	analysis = request.args.get('analysis')
+	
+	value = request.args.get('spread')
+	
+	heatmap = request.args.get('heatchecked')
 
 	#CAPTURE ANY ADDITIONAL ARGUMENTS SENT FROM THE CLIENT HERE
 
 	print "received coordinates: [" + lat1 + ", " + lat2 + "], [" + lng1 + ", " + lng2 + "]"
 	
 	client = pyorient.OrientDB("localhost", 2424)
-	session_id = client.connect("root", "password")
+	session_id = client.connect("root", "hello")
 	db_name = "soufun"
 	db_username = "admin"
 	db_password = "admin"
@@ -155,19 +159,21 @@ def getData():
 
 	#USE CONDITIONAL ALONG WITH UI INFORMATION RECEIVED FROM THE CLIENT TO SWITCH
 	#BETWEEN HEAT MAP AND INTERPOLATION ANALYSIS
-
+        
+        if heatmap == "True":
 	## HEAT MAP IMPLEMENTATION
-	# for record in records:
+	    q.put('heat mapping...')
+	    for record in records:
 
-	# 	pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
-	# 	pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
+	 	pos_x = int(remap(record.longitude, lng1, lng2, 0, numW))
+	 	pos_y = int(remap(record.latitude, lat1, lat2, numH, 0))
 
 	#USE INFORMATION RECEIVED FROM CLIENT TO CONTROL SPREAD OF HEAT MAP
-	# 	spread = 12
+		spread = value
 
-	# 	for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
-	# 		for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
-	# 			grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*(spread/2)**2))
+	 	for j in range(max(0, (pos_y-spread)), min(numH, (pos_y+spread))):
+	 		for i in range(max(0, (pos_x-spread)), min(numW, (pos_x+spread))):
+	 			grid[j][i] += 2 * math.exp((-point_distance(i,j,pos_x,pos_y)**2)/(2*(spread/2)**2))
 
 
 	## MACHINE LEARNING IMPLEMENTATION
